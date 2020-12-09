@@ -5,4 +5,4 @@ COPY ./build/scepclient-linux-amd64 /usr/bin/scepclient
 
 EXPOSE 8080
 
-ENTRYPOINT ["scepserver"]
+ENTRYPOINT ["/usr/bin/scepserver"]
