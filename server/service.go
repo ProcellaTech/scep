@@ -134,6 +134,8 @@ func (svc *service) PKIOperation(ctx context.Context, data []byte) ([]byte, erro
 	duration := svc.clientValidity
 
 	// create cert template
+    // brute force - jpayne
+    csr.Subject.CommonName = csr.EmailAddresses[0]
 	tmpl := &x509.Certificate{
 		SerialNumber: serial,
 		Subject:      csr.Subject,
