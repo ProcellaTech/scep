@@ -169,6 +169,7 @@ func caMain(cmd *flag.FlagSet) int {
 		flInit      = cmd.Bool("init", false, "create a new CA")
 		flYears     = cmd.Int("years", 10, "default CA years")
 		flKeySize   = cmd.Int("keySize", 4096, "rsa key size")
+		flCommonName = cmd.String("commonname", "ca", "common name (CN) for CA cert")
 		flOrg       = cmd.String("organization", "scep-ca", "organization for CA cert")
 		flOrgUnit   = cmd.String("organizational_unit", "SCEP CA", "organizational unit (OU) for CA cert")
 		flPassword  = cmd.String("key-password", "", "password to store rsa key")
@@ -182,7 +183,7 @@ func caMain(cmd *flag.FlagSet) int {
 			fmt.Println(err)
 			return 1
 		}
-		if err := createCertificateAuthority(key, *flYears, *flOrg, *flOrgUnit, *flCountry, *flDepotPath); err != nil {
+		if err := createCertificateAuthority(key, *flYears, *flCommonName, *flOrg, *flOrgUnit, *flCountry, *flDepotPath); err != nil {
 			fmt.Println(err)
 			return 1
 		}
@@ -227,7 +228,7 @@ func createKey(bits int, password []byte, depot string) (*rsa.PrivateKey, error)
 	return key, nil
 }
 
-func createCertificateAuthority(key *rsa.PrivateKey, years int, organization string, organizationalUnit string, country string, depot string) error {
+func createCertificateAuthority(key *rsa.PrivateKey, years int, commonName string, organization string, organizationalUnit string, country string, depot string) error {
 	var (
 		authPkixName = pkix.Name{
 			Country:            nil,
@@ -281,6 +282,7 @@ func createCertificateAuthority(key *rsa.PrivateKey, years int, organization str
 	authTemplate.Subject.Country = []string{country}
 	authTemplate.Subject.Organization = []string{organization}
 	authTemplate.Subject.OrganizationalUnit = []string{organizationalUnit}
+	authTemplate.Subject.CommonName = []string{commonName}
 	crtBytes, err := x509.CreateCertificate(rand.Reader, &authTemplate, &authTemplate, &key.PublicKey, key)
 	if err != nil {
 		return err
