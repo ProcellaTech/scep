@@ -239,7 +239,7 @@ func createCertificateAuthority(key *rsa.PrivateKey, years int, commonName strin
 			StreetAddress:      nil,
 			PostalCode:         nil,
 			SerialNumber:       "",
-			CommonName:         nil,
+			CommonName:         "",
 		}
 		// Build CA based on RFC5280
 		authTemplate = x509.Certificate{
@@ -282,7 +282,7 @@ func createCertificateAuthority(key *rsa.PrivateKey, years int, commonName strin
 	authTemplate.Subject.Country = []string{country}
 	authTemplate.Subject.Organization = []string{organization}
 	authTemplate.Subject.OrganizationalUnit = []string{organizationalUnit}
-	authTemplate.Subject.CommonName = []string{commonName}
+	authTemplate.Subject.CommonName = commonName
 	crtBytes, err := x509.CreateCertificate(rand.Reader, &authTemplate, &authTemplate, &key.PublicKey, key)
 	if err != nil {
 		return err
